@@ -1,0 +1,55 @@
+// prisma/schema.prisma
+datasource db {
+  provider  = "postgresql"
+  url  	    = env("DATABASE_URL")
+  // uncomment next line if you use Prisma <5.10
+  // directUrl = env("DATABASE_URL_UNPOOLED")
+}
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+model Product {
+  product_Id    Int    @unique        @id @default(autoincrement())
+  title         String
+  brand         String
+  price         Int
+  image_url     String
+  rating        String
+  Productdetail Productdetail?
+}
+
+model Productdetail {
+  productsdetailId Int @unique @id @default(autoincrement())
+
+  title           String            @db.VarChar(255)
+  image_url       String
+  style           String
+  rating          String
+  brand           String
+  price           Int
+  description     String
+  total_reviews   Int
+  availability    String
+  Product         Product?          @relation(fields: [product_Id], references: [product_Id])
+  product_Id      Int               @unique
+  Similarproducts Similarproducts[]
+}
+
+model Similarproducts {
+ id Int @unique @id @default(autoincrement())
+
+  title         String        @db.VarChar(255)
+  image_url     String
+  style         String
+  rating        String
+  price         Int
+  brand         String
+  description   String
+  total_reviews Int
+  availability  String
+  productsdetailId    Int           @unique
+  product_Id    Int           @unique
+  Product       Productdetail? @relation(fields: [productsdetailId], references: [product_Id] )
+}
